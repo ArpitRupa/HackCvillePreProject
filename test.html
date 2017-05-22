@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+      <title>
+        HI!
+      </title>
+  </head>
+  <body>
+<div id="result"></div>
+            <script>
+            $.ajax({
+                crossOrigin: true,
+                dataType: "json",
+                type:"GET",
+                url:'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.031750,-78.490944&radius=3000&type=restaurant|bar|cafe|bakery|meal_takeaway|night_club&key=AIzaSyCviHh01nvkM12G8D8sg7hCFppduhq-euQ',
+                success:printThis
+        });
+            function printThis(e){
+                total="";
+                $.each(e.results, function(index, value){
+                    total+="<h1>"+value.name+"</h1>";
+                    total+= "<div style='border-bottom:1 px solid black;'></div>";
+                });
+                $('#result').html(total);
+            }
+        </script>
+  </body>
+</html>

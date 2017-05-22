@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"
+    integrity="sha512-07I2e+7D8p6he1SIM+1twR5TIrhUQn9+I6yjqD53JQjFiMf8EtC93ty0/5vJTZGF8aAocvHYNEDJajGdNx1IsQ=="
+    crossorigin=""/>
+     <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"
+    integrity="sha512-A7vV8IFfih/D732iSSKi20u/ooOfj/AGehOKq0f4vLT1Zr2Y+RX7C+w8A1gaSasGtRUZpF/NZgzSAu4/Gc41Lg=="
+    crossorigin=""></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRjr3WtH3ACOqLjbw5sPt0PeSEqs1OEa8" async defer></script>
+    <link rel="stylesheet" href="style.css" />
+    <script src='https://unpkg.com/leaflet.gridlayer.googlemutant@latest/Leaflet.GoogleMutant.js'></script>
+    
+    <title>C-ville Restauraunt Map</title>
+</head>
+<body>
+
+    <div id="all">
+        <div id="header">
+            <h1 style="color:#002654">Cavaliers' Eater</h1>
+            <div id="logo">
+                <img class="displayed" src="http://cdn.wallpapersafari.com/6/61/SvRTNI.png" height="151" width="500">
+            </div>
+            <div id="face">
+                <img class="displayed" src="https://s-media-cache-ak0.pinimg.com/originals/c9/d9/44/c9d94463add7e790a4fbf0d525def58a.png" height="100">
+            </div>
+            <div id="star">
+            </div>
+        </div>
+        <hr style="background-color: #F36F21; border:0">
+       <div id="result" style="color:#002654"></div>
+       <div id="mapid"></div>
+            <script>
+            var mymap = L.map('mapid').setView([38.031754, -78.490948], 16);
+                var roads = L.gridLayer.googleMutant({
+                type: 'roadmap'
+                }).addTo(mymap);
+            var nameArray=[];
+            var latArray=[];
+            var lonArray=[];
+            var addressArray=[];            
+            $.ajax({
+                crossOrigin: true,
+                dataType: "json",
+                type:"GET",
+                url:'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=38.031750,-78.490944&radius=3000&opennow&type=restaurant|bar|cafe|bakery|night_club&key=AIzaSyCviHh01nvkM12G8D8sg7hCFppduhq-euQ',
+                success:printThis
+        });
+            function printThis(e){
+                total="";
+                var i=0;
+                $.each(e.results, function(index, value){
+                    total+="<h3>"+value.name+"</h3>";
+                     total+="<h5>"+value.vicinity+"</h5>";
+                    total+="<p style=color:#F9F900> Rating:"+value.rating+"/5 </p>"+'<img class="word-icon">';
+                    total+= "<hr>";
+                    nameArray.push(value.name);
+                    latArray.push(value.geometry.location.lat);
+                    lonArray.push(value.geometry.location.lng);
+                    addressArray.push(value.vicinity);
+                    
+                });
+                $('#result').html(total);
+                for(var i=0; i<nameArray.length; i++){
+                marker =new L.marker([latArray[i], lonArray[i]]).bindPopup("<b>"+nameArray[i]+"</b><br>"+addressArray[i]).addTo(mymap);
+            }
+            }
+            </script>
+</body>
+</html>
